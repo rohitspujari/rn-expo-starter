@@ -83,7 +83,8 @@ function round(n) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    //alignItems:'center'
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -103,6 +104,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
   sensor: {
+    //justifyContent: 'center',
     marginTop: 15,
     paddingHorizontal: 10,
   },

@@ -18,7 +18,7 @@ class AuthScreen extends Component {
     //debugger
     const { navigation, token } = nextProps;
     if (token) {
-      navigation.navigate('review')
+      navigation.navigate('authorized_container')
     }
   }
 

@@ -24,7 +24,7 @@ class WelcomeScreen extends Component {
     let token = await AsyncStorage.getItem('fb-token');
     if (token) {
       //debugger
-      this.props.navigation.navigate('main');
+      this.props.navigation.navigate('authorized_container');
       //this.setState({})
     } else {
       this.setState({token: false});

@@ -18,32 +18,40 @@ class App extends React.Component {
 
   render() {
     // Map Routes of the App
-    const MainNavigator = TabNavigator({
-      welcome: { screen: WelcomeScreen },
-      auth: { screen: AuthScreen },
-      main: {
+
+    const LandingTabs = TabNavigator({
+      map: { screen: MapScreen },
+      review: { screen: ReviewScreen }
+    });
+
+    const ContainerNavigator = DrawerNavigator({
+      landing: { screen : LandingTabs },
+      deck: { screen: DeckScreen },
+      settings: { screen: SettingsScreen},
+      sandbox: {
         screen: TabNavigator({
-          map: { screen: StackNavigator({ map: { screen: MapScreen}})},
-          deck: { screen: DeckScreen },
-          review: {
-            screen: StackNavigator({
-              review: { screen: ReviewScreen },
-              settings: { screen: SettingsScreen }
-          })}
-        }, { lazyLoad: true })
+          acc: { screen: AccelerometerSensor},
+          gyro: { screen: GyroscopeSensor}
+        })
       }
-    },
-    {
+    });
+
+    const MainNavigator = TabNavigator({
+        welcome: { screen: WelcomeScreen },
+        auth: { screen: AuthScreen },
+        authorized_container: { screen: ContainerNavigator }
+      },{
       navigationOptions: {
         tabBar: { visible: false }
       },
       lazyLoad: true
-    })
+    });
+
 
     return (
       <Provider store={store}>
         <View style={styles.container}>
-          <TestComponent />
+          <MainNavigator />
         </View>
       </Provider>
     );
