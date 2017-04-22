@@ -20,7 +20,10 @@ class App extends React.Component {
     // Map Routes of the App
 
     const LandingTabs = TabNavigator({
-      map: { screen: MapScreen },
+      map: { screen:
+        StackNavigator({
+          camera: { screen: MapScreen}       
+      })},
       review: { screen: ReviewScreen }
     });
 

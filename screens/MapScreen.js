@@ -20,8 +20,11 @@ class MapScreen extends Component {
       return {
         left: (
           <Button
-            title='Settings'
-            onPress={() => navigate('settings')}
+            icon={{
+              name: 'settings',
+              color: '#4e5156'
+            }}
+            onPress={() => navigate('DrawerOpen')}
             backgroundColor='rgba(0,0,0,0)'
             color='rgba(0,122,255,1)'
           />
