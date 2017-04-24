@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
-import { Image, View, Text, Platform, AsyncStorage } from 'react-native';
+import { Image, View, ScrollView, Text, Platform, AsyncStorage, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { ImagePicker } from 'expo';
 import { Button, Icon } from 'react-native-elements';
 import * as actions from '../actions'
+import { GoogleVision } from '../sandbox';
+//const { HEIGHT, WIDTH } = Dimensions.get('window');
 
+
+const HEIGHT = 200;
+const WIDTH = 300;
 
 class MapScreen extends Component {
 
@@ -39,46 +44,51 @@ class MapScreen extends Component {
 
 
 
+  getImage(image) {
+
+    if(image) {
+      return (
+        <View style={{flex: 2, borderWidth: 0,  }}>
+        <ScrollView style={{flex:1}}>
+          <Image source={{ uri: image }} style={{ width: WIDTH, height: HEIGHT, marginTop: 10, alignSelf: 'center'}} />
+          <GoogleVision image={image} />
+        </ScrollView>
+        </View>
+      )
+    }
+
+  }
 
   render () {
     let { image } = this.state;
 
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Button
-          buttonStyle={{marginBottom:10}}
-          title="Pick an image from camera roll"
-          onPress={this.pickImage}
-        />
-        <Button
-         title="Take a picture"
-         onPress={this.clickCamera}
-       />
-       <Button
-         buttonStyle={{marginTop:10}}
-         title="Log Out"
-         onPress={this.logOut}
-
-       />
-
-        {image &&
-          <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+      <View style={{ flex: 1, }}>
+        <View style={{ flex:1, justifyContent: 'center',borderWidth: 0, }}>
+          <Button
+            buttonStyle={{marginBottom:10}}
+            title="Pick an image from camera roll"
+            onPress={this.pickImage}
+          />
+          <Button
+           title="Take a picture"
+           onPress={this.clickCamera}
+         />
+       </View>
+       {this.getImage(image)}
       </View>
 
     );
   }
 
 
-  logOut = () => {
-    this.props.facebookLogout();
-    this.props.navigation.navigate('welcome');
-  }
+
 
 
   pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      aspect: [4, 3],
+      //aspect: [4, 3],
     });
 
     console.log(result);
@@ -91,7 +101,7 @@ class MapScreen extends Component {
   clickCamera = async () => {
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
-      aspect: [4, 3],
+      //aspect: [4, 3],
     });
 
     console.log(result);

@@ -12,7 +12,8 @@ import MapScreen from './screens/MapScreen';
 import ReviewScreen from './screens/ReviewScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
-import { AccelerometerSensor, LocationComponent, TestComponent, GyroscopeSensor } from './sandbox';
+import LogoutScreen from './screens/LogoutScreen';
+import { AccelerometerSensor, LocationComponent, TestComponent, GyroscopeSensor, GoogleVision } from './sandbox';
 
 class App extends React.Component {
 
@@ -22,7 +23,7 @@ class App extends React.Component {
     const LandingTabs = TabNavigator({
       map: { screen:
         StackNavigator({
-          camera: { screen: MapScreen}       
+          camera: { screen: MapScreen}
       })},
       review: { screen: ReviewScreen }
     });
@@ -34,10 +35,12 @@ class App extends React.Component {
       sandbox: {
         screen: TabNavigator({
           acc: { screen: AccelerometerSensor},
-          gyro: { screen: GyroscopeSensor}
+          gyro: { screen: GyroscopeSensor},
+          vision: { screen: GoogleVision }
         })
-      }
-    });
+      },
+      logout: { screen: LogoutScreen}
+    },);
 
     const MainNavigator = TabNavigator({
         welcome: { screen: WelcomeScreen },
@@ -50,11 +53,16 @@ class App extends React.Component {
       lazyLoad: true
     });
 
+    const SandboxNavigator = TabNavigator({
+      camera: { screen: MapScreen },
+      vision: { screen: GoogleVision }
+    })
+
 
     return (
       <Provider store={store}>
         <View style={styles.container}>
-          <MainNavigator />
+          <SandboxNavigator />
         </View>
       </Provider>
     );

@@ -10,7 +10,7 @@ class AuthScreen extends Component {
 
 
   componentDidMount () {
-    this.props.facebookLogin();
+    //this.props.facebookLogin();
   }
 
 
@@ -18,7 +18,7 @@ class AuthScreen extends Component {
     //debugger
     const { navigation, token } = nextProps;
     if (token) {
-      navigation.navigate('authorized_container')
+      navigation.navigate('camera')
     }
   }
 
