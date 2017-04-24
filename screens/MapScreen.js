@@ -64,16 +64,18 @@ class MapScreen extends Component {
 
     return (
       <View style={{ flex: 1, }}>
-        <View style={{ flex:1, justifyContent: 'center',borderWidth: 0, }}>
-          <Button
-            buttonStyle={{marginBottom:10}}
-            title="Pick an image from camera roll"
-            onPress={this.pickImage}
-          />
-          <Button
-           title="Take a picture"
+        <View style={{ flexDirection:'row', flex:1, justifyContent: 'center', alignItems:'center', borderWidth: 0, }}>
+          <Icon
+           raised
+           name="camera-enhance"
            onPress={this.clickCamera}
          />
+         <Icon
+            raised
+            name='file-upload'
+            onPress={this.pickImage}
+         />
+
        </View>
        {this.getImage(image)}
       </View>

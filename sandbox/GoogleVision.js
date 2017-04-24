@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import GCP from '../gcp_account.json';
 import axios from 'axios';
+import { Components } from 'expo';
 import { List, ListItem } from 'react-native-elements';
 
 const VISION_API = `https://vision.googleapis.com/v1/images:annotate?key=${GCP.key}`
@@ -51,8 +52,6 @@ export class GoogleVision extends Component {
   //   xhr.send();
   // }
 
-
-
   callVisionApi(imgBase64){
     //console.log(imgBase64);
     const request = {
@@ -69,44 +68,37 @@ export class GoogleVision extends Component {
         }
       ]
     }
-
     axios.post(VISION_API, request)
       .then(response => {
         //e.log(response.data)
-        this.setState({responses: response.data.responses})
-      })
-
-
+        this.setState({responses: response.data.responses, isLoading: false})
+      });
   }
 
   componentWillReceiveProps(nextProps) {
-    //debugger
-    console.log('componentWillReceiveProps')
+
     if(this.props.image === nextProps.image){
       return;
     }
+    this.setState({isLoading: true});
     this.getImage(nextProps.image, this.callVisionApi.bind(this));
+
   }
 
-  componentDidMount () {
-
-    console.log('componentDidMount')
+  componentDidMount() {
 
     if(!this.props.image){
       return;
     }
-
-
     this.getImage(this.props.image, this.callVisionApi.bind(this));
 
   }
 
-
   renderLabels = (responses) => {
-    if(responses) {
-      //e.log(responses)
+    console.log(this.state)
 
-      return responses.map(response => {
+    if(responses && this.state.isLoading === false) {
+        return responses.map(response => {
         if(response.error){
           return <Text key={response.error.code}>{response.error.message}</Text>
         }
@@ -123,19 +115,18 @@ export class GoogleVision extends Component {
         });
       });
     }
-    return <View/>;
+    return (
+      //<Components.AppLoading />
+      <View><Text>Loading ..</Text></View>
+    );
 
   }
 
   render () {
-
-    //debugger
     return (
-
       <List containerStyle={{marginBottom: 20}}>
         {this.renderLabels(this.state.responses)}
       </List>
-
     );
   }
 }

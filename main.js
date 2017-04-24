@@ -13,7 +13,7 @@ import ReviewScreen from './screens/ReviewScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import LogoutScreen from './screens/LogoutScreen';
-import { AccelerometerSensor, LocationComponent, TestComponent, GyroscopeSensor, GoogleVision } from './sandbox';
+import { AccelerometerSensor, LocationComponent, TestComponent, GyroscopeSensor, GoogleVision} from './sandbox';
 
 class App extends React.Component {
 
@@ -55,7 +55,8 @@ class App extends React.Component {
 
     const SandboxNavigator = TabNavigator({
       camera: { screen: MapScreen },
-      vision: { screen: GoogleVision }
+      vision: { screen: TestComponent },
+
     })
 
 
