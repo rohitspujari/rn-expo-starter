@@ -10,41 +10,56 @@ export class GoogleVision extends Component {
 
   state = {};
 
-  getBase64Image(img) {
-    // Create an empty canvas element
-    var canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
 
-    // Copy the image contents to the canvas
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-
-    // Get the data-URL formatted image
-    // Firefox supports PNG and JPEG. You could check img.src to
-    // guess the original format, but be aware the using "image/jpg"
-    // will re-encode the image.
-    var dataURL = canvas.toDataURL("image/png");
-
-    return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-  }
-
-  componentDidMount () {
-
-    if(!this.props.image){
-      return
+  getImage = (img, callback) => {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', img , true);
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function(e) {
+      if (this.status == 200) {
+        var uInt8Array = new Uint8Array(this.response);
+        var i = uInt8Array.length;
+        var binaryString = new Array(i);
+        while (i--) {
+          binaryString[i] = String.fromCharCode(uInt8Array[i]);
+        }
+        var data = binaryString.join('');
+        if (!global.btoa) {
+          global.btoa = require('base-64').encode;
+        }
+      var base64 = window.btoa(data);
+      callback(base64)
+      //callback("data:image/png;base64,"+base64);
     }
+  };
+  xhr.send();
+}
 
-    console.log(window)
-    console.log(this.props.image)
 
+  // toDataUrl(url, callback) {
+  //   const xhr = new XMLHttpRequest();
+  //   xhr.onload = function() {
+  //       var reader = new FileReader();
+  //       reader.onloadend = function() {
+  //           //get rid of first 23 chars
+  //           callback(reader.result.slice(23));
+  //       }
+  //       reader.readAsDataURL(xhr.response);
+  //   };
+  //   xhr.open('GET', url);
+  //   xhr.responseType = 'blob';
+  //   xhr.send();
+  // }
+
+
+
+  callVisionApi(imgBase64){
+    //console.log(imgBase64);
     const request = {
       requests: [
         {
           image: {
-            source: {
-              imageUri: "http://cdn23.us1.fansshare.com/photos/elishacuthbert/elisha-cuthbert-jpeg-my-sassy-girl-1234688200.jpg"
-            }
+            content: imgBase64
           },
           features: [
             {
@@ -55,21 +70,41 @@ export class GoogleVision extends Component {
       ]
     }
 
-
     axios.post(VISION_API, request)
       .then(response => {
-        //console.log(response.data)
+        //e.log(response.data)
         this.setState({responses: response.data.responses})
       })
 
 
+  }
+
+  componentWillReceiveProps(nextProps) {
+    //debugger
+    console.log('componentWillReceiveProps')
+    if(this.props.image === nextProps.image){
+      return;
+    }
+    this.getImage(nextProps.image, this.callVisionApi.bind(this));
+  }
+
+  componentDidMount () {
+
+    console.log('componentDidMount')
+
+    if(!this.props.image){
+      return;
+    }
+
+
+    this.getImage(this.props.image, this.callVisionApi.bind(this));
 
   }
 
 
   renderLabels = (responses) => {
     if(responses) {
-      console.log(responses)
+      //e.log(responses)
 
       return responses.map(response => {
         if(response.error){
