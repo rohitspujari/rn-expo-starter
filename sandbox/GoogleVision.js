@@ -124,9 +124,9 @@ export class GoogleVision extends Component {
 
   render () {
     return (
-      <List containerStyle={{marginBottom: 20}}>
+      <View>
         {this.renderLabels(this.state.responses)}
-      </List>
+      </View>
     );
   }
 }

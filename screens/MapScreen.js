@@ -1,22 +1,24 @@
 import React, { Component } from 'react';
-import { Image, View, ScrollView, Text, Platform, AsyncStorage, Dimensions } from 'react-native';
+import { Image, View, ScrollView, Text, Platform, AsyncStorage, Dimensions, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { ImagePicker } from 'expo';
 import { Button, Icon } from 'react-native-elements';
 import * as actions from '../actions'
 import { GoogleVision } from '../sandbox';
-//const { HEIGHT, WIDTH } = Dimensions.get('window');
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
+const PLACEHOLDER_IMAGE = 'http://www.businesswise.co.il/wp-content/uploads/2014/12/default-placeholder.png';
+const { HEIGHT, WIDTH } = Dimensions.get('window');
 
 
-const HEIGHT = 200;
-const WIDTH = 300;
+//const HEIGHT = 200;
+//const WIDTH = 300;
 
 class MapScreen extends Component {
 
 
 
   state = {
-    image: null,
+    image: PLACEHOLDER_IMAGE,
   };
 
   static navigationOptions = {
@@ -44,44 +46,47 @@ class MapScreen extends Component {
 
 
 
-  getImage(image) {
 
-    if(image) {
-      return (
-        <View style={{flex: 2, borderWidth: 0,  }}>
-        <ScrollView style={{flex:1}}>
-          <Image source={{ uri: image }} style={{ width: WIDTH, height: HEIGHT, marginTop: 10, alignSelf: 'center'}} />
-          <GoogleVision image={image} />
-        </ScrollView>
-        </View>
-      )
-    }
-
-  }
 
   render () {
     let { image } = this.state;
 
     return (
-      <View style={{ flex: 1, }}>
-        <View style={{ flexDirection:'row', flex:1, justifyContent: 'center', alignItems:'center', borderWidth: 0, }}>
+      <View style={{ flex: 1 }}>
+          <ParallaxScrollView
+              style={{ flex: 1, overflow: 'hidden' }}
+              renderBackground={() => <Image source={{ uri: image, width: WIDTH, height: 350 }}/>}
+              renderFixedHeader={() => this.getButtons()}
+              parallaxHeaderHeight={ 350 }>
+            <GoogleVision image={image} />
+          </ParallaxScrollView>
+      </View>
+    );
+  }
+
+
+  getButtons = () => {
+      const buttonContainer = {
+        backgroundColor: '#ffff',
+        opacity: .3
+      }
+      return (
+        <View style={{ flexDirection:'column', flex:1, justifyContent: 'center', alignItems:'flex-end', borderWidth: 0, marginRight: 20, marginTop: 20}}>
           <Icon
            raised
+           containerStyle={buttonContainer}
            name="camera-enhance"
            onPress={this.clickCamera}
          />
          <Icon
             raised
+            containerStyle={buttonContainer}
             name='file-upload'
             onPress={this.pickImage}
          />
-
        </View>
-       {this.getImage(image)}
-      </View>
-
-    );
-  }
+   )
+};
 
 
 
