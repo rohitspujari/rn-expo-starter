@@ -12,7 +12,9 @@ export const analyzeImage = (image, callback) => {
           },
           features: [
             { type: "LABEL_DETECTION" },
-            { type: "WEB_DETECTION" }
+            { type: "WEB_DETECTION" },
+            { type: "DOCUMENT_TEXT_DETECTION" },
+            { type: "LANDMARK_DETECTION" }
           ]
         }
       ]

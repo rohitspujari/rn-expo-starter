@@ -8,12 +8,12 @@ import store from './store';
 // Screen Imports
 import AuthScreen from './screens/AuthScreen';
 import DeckScreen from './screens/DeckScreen';
-import MapScreen from './screens/MapScreen';
+import CameraScreen from './screens/CameraScreen';
 import ReviewScreen from './screens/ReviewScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import LogoutScreen from './screens/LogoutScreen';
-import { AccelerometerSensor, LocationComponent, TestComponent, GyroscopeSensor, GoogleVision} from './sandbox';
+import { AccelerometerSensor, LocationComponent, TestComponent, GyroscopeSensor} from './sandbox';
 
 class App extends React.Component {
 
@@ -23,7 +23,7 @@ class App extends React.Component {
     const LandingTabs = TabNavigator({
       map: { screen:
         StackNavigator({
-          camera: { screen: MapScreen}
+          camera: { screen: CameraScreen}
       })},
       review: { screen: ReviewScreen }
     });
@@ -36,7 +36,6 @@ class App extends React.Component {
         screen: TabNavigator({
           acc: { screen: AccelerometerSensor},
           gyro: { screen: GyroscopeSensor},
-          vision: { screen: GoogleVision }
         })
       },
       logout: { screen: LogoutScreen}
@@ -54,7 +53,7 @@ class App extends React.Component {
     });
 
     const SandboxNavigator = TabNavigator({
-      camera: { screen: MapScreen },
+      camera: { screen: CameraScreen },
       vision: { screen: TestComponent },
 
     })
@@ -63,7 +62,7 @@ class App extends React.Component {
     return (
       <Provider store={store}>
         <View style={styles.container}>
-          <SandboxNavigator />
+          <MainNavigator />
         </View>
       </Provider>
     );
