@@ -13,7 +13,7 @@ import ReviewScreen from './screens/ReviewScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import LogoutScreen from './screens/LogoutScreen';
-import { AccelerometerSensor, LocationComponent, TestComponent, GyroscopeSensor} from './sandbox';
+import { AccelerometerSensor, LocationComponent, TestComponent, GyroscopeSensor, ParallaxComponent} from './sandbox';
 
 class App extends React.Component {
 
@@ -25,7 +25,7 @@ class App extends React.Component {
         StackNavigator({
           camera: { screen: CameraScreen}
       })},
-      review: { screen: ReviewScreen }
+      review: { screen: ParallaxComponent }
     });
 
     const ContainerNavigator = DrawerNavigator({
