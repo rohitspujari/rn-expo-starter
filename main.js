@@ -21,10 +21,7 @@ class App extends React.Component {
     // Map Routes of the App
 
     const LandingTabs = TabNavigator({
-      map: { screen:
-        StackNavigator({
-          camera: { screen: CameraScreen}
-      })},
+      camera: { screen: CameraScreen },      
       review: { screen: ParallaxComponent }
     });
 
@@ -47,7 +44,7 @@ class App extends React.Component {
         authorized_container: { screen: ContainerNavigator }
       },{
       navigationOptions: {
-        tabBar: { visible: false }
+        tabBarVisible: false
       },
       lazyLoad: true
     });

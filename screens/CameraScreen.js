@@ -31,27 +31,33 @@ class CameraScreen extends Component {
 
   };
 
-  static navigationOptions = {
-    title: 'Vision',
-    header: ({ navigate }) => {
-      return {
-        left: (
-          <Button
-            icon={{
-              name: 'settings',
-              color: '#4e5156'
-            }}
-            onPress={() => navigate('DrawerOpen')}
-            backgroundColor='rgba(0,0,0,0)'
-            color='rgba(0,122,255,1)'
-          />
-        ),
-        style: {
-          marginTop: Platform.OS === 'android'? 24: 0
-        },
-      };
-    }
-  }
+  // static navigationOptions = {
+  //   title: 'Vision',
+  //   header: ({ navigate }) => {
+  //     return {
+  //       left: (
+  //         <Button
+  //           icon={{
+  //             name: 'settings',
+  //             color: '#4e5156'
+  //           }}
+  //           onPress={() => navigate('DrawerOpen')}
+  //           backgroundColor='rgba(0,0,0,0)'
+  //           color='rgba(0,122,255,1)'
+  //         />
+  //       ),
+  //       style: {
+  //         marginTop: Platform.OS === 'android'? 24: 0
+  //       },
+  //     };
+  //   }
+  // }
+
+
+  static navigationOptions = ({ navigation }) => ({
+    title: 'Vision'
+
+  })
 
   getImageLabels(imageLabels) {
     if (imageLabels.length > 1) {
