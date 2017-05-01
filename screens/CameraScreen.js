@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, ListView, View, Modal, ScrollView, Text, Platform, AsyncStorage, Dimensions, TouchableOpacity } from 'react-native';
+import { Image, ListView, View, Modal, ScrollView, Text, Platform, AsyncStorage, Dimensions, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 import { ImagePicker, Svg} from 'expo';
 import { Button, Icon, Divider, Badge, ButtonGroup } from 'react-native-elements';
@@ -10,7 +10,10 @@ import ImageProgress from 'react-native-image-progress';
 import ProgressBar from 'react-native-progress/Circle';
 const PLACEHOLDER_IMAGE = 'https://s3.amazonaws.com/popco/images/services/starter-page/img-round-placeholder.jpg';
 
-const { HEIGHT, WIDTH } = Dimensions.get('window');
+const HEIGHT = Dimensions.get('window').height;
+const WIDTH = Dimensions.get('window').width;
+const BLANK_TEXT = ''
+
 const badgeColors = ['#effcf5', '#cdd4a2', '#97a3a3', '#e2c950','#f2c79c']
 
 class CameraScreen extends Component {
@@ -21,7 +24,7 @@ class CameraScreen extends Component {
     image: PLACEHOLDER_IMAGE,
     imageLandmarks: [],
     imageLabels: [],
-    imageText: '',
+    imageText: BLANK_TEXT,
     similarImages: [],
     modalVisible: false,
     selectedIndex: 0,
@@ -51,10 +54,6 @@ class CameraScreen extends Component {
   }
 
   getImageLabels(imageLabels) {
-    if(this.state.isLoading) {
-      return <Text>Loading .. </Text>
-    }
-
     if (imageLabels.length > 1) {
       return (imageLabels.map(label => <Badge
         containerStyle={{
@@ -71,6 +70,8 @@ class CameraScreen extends Component {
     {
       return (
         <View>
+          <Divider style={{ marginTop: 5, marginBottom: 5}} />
+          <Text style={{fontWeight:'bold', marginBottom: 5, color: '#645856' }}>Landmark</Text>
           <Text>{imageLandmarks[0].description}</Text>
         </View>
       )
@@ -83,7 +84,11 @@ class CameraScreen extends Component {
   }
 
   render () {
+
     let {image, imageLabels, imageText, similarImages, imageLandmarks } = this.state;
+
+
+
 
     return (
       <View style={{ flex: 1 }}>
@@ -126,34 +131,49 @@ class CameraScreen extends Component {
                   <Image source={{ uri: image, width: WIDTH, height: 350 }}/>
                 </View>
               }}
-              renderFixedHeader={() => this.getButtons()}
               parallaxHeaderHeight={ 350 }>
-            <ButtonGroup
+
+               <ButtonGroup
                 onPress={selectedIndex => this.setState({selectedIndex})}
                 selectedIndex={this.state.selectedIndex}
                 buttons={['Summary', 'Text']}/>
-            <View style={{
-              flex:1,
-              flexDirection: 'row',
-              //justifyContent:'space-between',
-              alignItems: 'center',
-              padding: 5,
-              flexWrap:'wrap',
-            }}>
-              {this.getImageLabels(imageLabels)}
-            </View>
-            {this.getImageLandmarks(imageLandmarks)}
-            {this.getImageText(imageText)}
+              {this.state.isLoading && (<ActivityIndicator style={{marginTop:50}} animating={this.state.isLoading} />)}
+              {!this.state.isLoading && this.getParallaxContent(imageLabels, imageText, imageLandmarks)}
+
           </ParallaxScrollView>
+          {this.getButtons()}
       </View>
     );
   }
 
+  getParallaxContent(imageLabels, imageText, imageLandmarks) {
+    return <View>
+      <View style={{
+        flex:1,
+        flexDirection: 'row',
+        //justifyContent:'space-between',
+        alignItems: 'center',
+        padding: 5,
+        flexWrap:'wrap',
+      }}>
+        {this.getImageLabels(imageLabels)}
+      </View>
+      <View style={{paddingHorizontal: 10, borderWidth: 0, borderColor:'red'}}>
+        {this.getImageLandmarks(imageLandmarks)}
+        {this.state.selectedIndex === 1 && this.getImageText(imageText)}
+      </View>
+    </View>
+  }
+
   getImageText(imageText) {
-    if(!this.state.isLoading){
-      return (<View style={{padding:10}}>
-        <Text>{imageText}</Text>
-      </View>);
+    if(!this.state.isLoading && imageText !== BLANK_TEXT){
+      return (
+        <View>
+          <Divider style={{ marginTop: 5, marginBottom: 5}} />
+          <Text style={{fontWeight:'bold', marginBottom: 5, color: '#645856' }}>Extracted Text</Text>
+          <Text>{imageText}</Text>
+        </View>
+      );
     }
 
   }
@@ -162,9 +182,10 @@ class CameraScreen extends Component {
       const buttonContainer = {
         backgroundColor: '#ffff',
         opacity: .3
+
       }
       return (
-        <View style={{ flexDirection:'column', flex:1, justifyContent: 'center', alignItems:'flex-end', borderWidth: 0, marginRight: 15, marginTop: 20}}>
+        <View style={{ position: 'absolute', borderWidth: 0, left: (WIDTH - WIDTH/5), top: 10 }}>
           <Icon
            raised
            containerStyle={buttonContainer}
@@ -189,9 +210,10 @@ class CameraScreen extends Component {
 
   extractContent(response) {
 
-    const imageLabels = response.labelAnnotations ? response.labelAnnotations: []
-    const imageText = response.fullTextAnnotation ? response.fullTextAnnotation.text: null
-    const imageLandmarks = response.landmarkAnnotations? response.landmarkAnnotations: []
+    const imageLabels = response.labelAnnotations ? response.labelAnnotations: [];
+    const imageText = response.fullTextAnnotation ? response.fullTextAnnotation.text: BLANK_TEXT;
+    const imageLandmarks = response.landmarkAnnotations? response.landmarkAnnotations: [];
+
     var similarImages = [];
     if(response.webDetection){
       //similarImages = response.webDetection.visuallySimilarImages;
@@ -216,8 +238,8 @@ class CameraScreen extends Component {
 
   processImage( image ) {
     analyzeImage(image, (responses) => {
-      const { imageLabels, imageText, similarImages } = this.extractContent(responses[0])
-      this.setState({ imageLabels, imageText, similarImages, isLoading: false});
+      const { imageLabels, imageText, similarImages, imageLandmarks } = this.extractContent(responses[0])
+      this.setState({ imageLabels, imageText, similarImages, imageLandmarks, isLoading: false});
     });
   }
 
@@ -230,7 +252,7 @@ class CameraScreen extends Component {
     //console.log(result);
 
     if (!result.cancelled) {
-      this.setState({ image: result.uri, isLoading: true });
+      this.setState({ image: result.uri, isLoading: true, selectedIndex: 0 });
       this.processImage(result.uri)
     }
   };
@@ -244,7 +266,7 @@ class CameraScreen extends Component {
     //console.log(result);
 
     if (!result.cancelled) {
-      this.setState({ image: result.uri, isLoading: true });
+      this.setState({ image: result.uri, isLoading: true, selectedIndex: 0 });
       this.processImage(result.uri)
     }
   };
