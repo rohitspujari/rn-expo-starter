@@ -21,8 +21,9 @@ class App extends React.Component {
     // Map Routes of the App
 
     const LandingTabs = TabNavigator({
-      camera: { screen: CameraScreen },      
-      review: { screen: ParallaxComponent }
+      review: { screen: DeckScreen },
+      camera: { screen: CameraScreen },
+
     });
 
     const ContainerNavigator = DrawerNavigator({

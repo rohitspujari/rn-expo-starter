@@ -24,7 +24,7 @@ class WelcomeScreen extends Component {
     let token = await AsyncStorage.getItem('fb-token');
     if (token) {
       //debugger
-      this.props.navigation.navigate('camera');
+      this.props.navigation.navigate('landing');
       //this.setState({})
     } else {
       this.setState({token: false});

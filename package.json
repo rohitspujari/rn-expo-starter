@@ -6,6 +6,7 @@
   "private": true,
   "main": "main.js",
   "dependencies": {
+    "api-ai-javascript": "^2.0.0-beta.14",
     "axios": "^0.16.1",
     "base-64": "^0.1.0",
     "expo": "^16.0.0",
@@ -20,5 +21,8 @@
     "react-redux": "^5.0.4",
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0"
+  },
+  "devDependencies": {
+    "api-ai-javascript": "^2.0.0-beta.19"
   }
 }
