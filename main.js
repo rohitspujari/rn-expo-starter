@@ -13,18 +13,36 @@ import ReviewScreen from './screens/ReviewScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import LogoutScreen from './screens/LogoutScreen';
-import { AccelerometerSensor, LocationComponent, TestComponent, GyroscopeSensor, ParallaxComponent} from './sandbox';
+import { AccelerometerSensor, LocationComponent, TestComponent, GyroscopeSensor, ParallaxComponent, BarcodeScanner, BarcodeDetail } from './sandbox';
 
 class App extends React.Component {
 
   render() {
     // Map Routes of the App
 
+    // const LandingTabs = TabNavigator({
+    //   barcode: { screen: BarcodeScanner },
+    //   review: { screen: DeckScreen },
+    //   camera: { screen: CameraScreen },
+    //
+    // });
+
+
     const LandingTabs = TabNavigator({
+      barcode: {
+        screen: StackNavigator({
+          scan: { screen: BarcodeScanner },
+          detail: {
+            screen: BarcodeDetail,
+            //navigationOptions: ({ navigation }) => ()
+          }
+      })},
       review: { screen: DeckScreen },
       camera: { screen: CameraScreen },
 
     });
+
+
 
     const ContainerNavigator = DrawerNavigator({
       landing: { screen : LandingTabs },
@@ -71,8 +89,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    //alignItems: 'center',
+    //justifyContent: 'center',
   },
 });
 
